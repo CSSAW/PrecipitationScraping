@@ -1,0 +1,1 @@
+SELECT * FROM NOAA_Data;
