@@ -55,7 +55,6 @@ def scrape_file(filename):
         total += 1
         try:
             data = smart_split(line)
-            print(data[0], cur_station, data[5], cur_month, cur_year)
             station = data[0]
             month, _, year = data[5].split('/')
             if contained(float(data[2]), float(data[3])):
@@ -74,11 +73,12 @@ def scrape_file(filename):
                     _contained += 1
                     line = f.readline()
                 else:
-                    print(total_prcp, total_temp, total_days)
-                    data = smart_split(prev_line)
+                    # Appending monthly data to result csv
+                    data = smart_split(prev_line)   # Reusing constant data such as station name
+                    # Modify temperature, precipitation, and date
                     data[7] = str(round(total_temp / total_days))
                     data[6] = str(round(total_prcp, 2))
-                    data[5] = cur_month + '/1/' + cur_year
+                    data[5] = cur_year + ('0'*(2-len(cur_month)) + cur_month) + '00'
                     new_line = ','.join(data)
                     new_line += '\n'
                     result += new_line
@@ -97,6 +97,7 @@ def scrape_file(filename):
             print('Could not parse """' + line + '"""')
             fail_count += 1
             line = f.readline()
+    # Report success rate
     print("Successfully read " + str(total - fail_count) + " out of " + str(total) + " lines")
     print(str(_contained) + " out of " + str(total - fail_count) + " points were contained by the limpopo region")
     return result
